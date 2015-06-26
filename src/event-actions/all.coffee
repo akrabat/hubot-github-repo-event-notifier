@@ -101,5 +101,6 @@ module.exports =
     callback "#{formatUser(data.sender.login)} updated the wiki"
 
   status: (data, callback) ->
-    callback "Status update: #{data.description} (#{formatLink(data.target_url)})"
+    return if data.status = "pending"
+    callback "Status update: [#{data.status}] #{data.description} (#{formatLink(data.target_url)})"
 
