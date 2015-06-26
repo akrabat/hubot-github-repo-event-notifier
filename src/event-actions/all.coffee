@@ -1,5 +1,8 @@
 #! /usr/bin/env coffee
 
+Log = require('log')
+logger = new Log process.env.HUBOT_LOG_LEVEL or 'info'
+
 enableColors = process.env['HUBOT_GITHUB_EVENT_NOTIFIER_IRC_COLORS']
 
 if enableColors?
@@ -92,7 +95,7 @@ module.exports =
       commit_count = data.commits.length
       callback "#{formatUser(data.sender.login)} pushed #{commit_count} commits to #{data.repository.name}"
     else
-      console.log("Notifications only on master and gh-pages branches")
+      logger.info("Notifications only on master and gh-pages branches")
 
   pull_request_review_comment: (data, callback) ->
     callback "#{formatUser(data.comment.user.login)} commented on pull request \"#{data.pull_request.title}\" (#{formatLink(data.pull_request.html_url)})"

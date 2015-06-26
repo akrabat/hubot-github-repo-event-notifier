@@ -21,6 +21,9 @@ eventActions  = require('./event-actions/all')
 eventTypesRaw = process.env['HUBOT_GITHUB_EVENT_NOTIFIER_TYPES']
 eventTypes    = []
 
+Log = require('log')
+logger = new Log process.env.HUBOT_LOG_LEVEL or 'info'
+
 if eventTypesRaw?
   eventTypes = eventTypesRaw.split(',')
 else
@@ -33,17 +36,17 @@ module.exports = (robot) ->
     data = req.body
     room = query.room || process.env["HUBOT_GITHUB_EVENT_NOTIFIER_ROOM"]
     eventType = req.headers["x-github-event"]
-    console.log "Processing event type #{eventType}..."
+    logger.info("Processing event type #{eventType}...")
 
     try
       if eventType in eventTypes
         announceRepoEvent data, eventType, (what) ->
           robot.messageRoom room, what
       else
-        console.log "Ignoring #{eventType} event as it's not allowed."
+        logger.info("Ignoring #{eventType} event as it's not allowed.")
     catch error
       robot.messageRoom room, "Whoa, I got an error: #{error}"
-      console.log "github repo event notifier error: #{error}. Request: #{req.body}"
+      logger.error("github repo event notifier error: #{error}. Request: #{req.body}")
 
     res.end ""
 
