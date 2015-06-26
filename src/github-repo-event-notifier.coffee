@@ -1,3 +1,20 @@
+# Description:
+#   Notifies about any available GitHub repo event via webhook #
+#
+# Configuration:
+#   HUBOT_GITHUB_EVENT_NOTIFIER_ROOM  - The default room to which message should go (optional)
+#   HUBOT_GITHUB_EVENT_NOTIFIER_TYPES - Comma-separated list of event types to notify on
+#     (See: http://developer.github.com/webhooks/#events)
+#
+# Commands:
+#   None
+#
+# Author:
+#   spajus
+#   patcon
+#   parkr
+#   lornajane
+
 url           = require('url')
 querystring   = require('querystring')
 eventActions  = require('./event-actions/all')
