@@ -99,3 +99,7 @@ module.exports =
 
   gollum: (data, callback) ->
     callback "#{formatUser(data.sender.login)} updated the wiki"
+
+  status: (data, callback) ->
+    callback "Status update: #{data.description} (#{formatLink(data.target_url)})"
+
