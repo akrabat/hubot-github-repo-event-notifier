@@ -4,6 +4,7 @@ Log = require('log')
 logger = new Log process.env.HUBOT_LOG_LEVEL or 'info'
 
 enableColors = process.env['HUBOT_GITHUB_EVENT_NOTIFIER_IRC_COLORS']
+limitBranches = process.env['HUBOT_GITHUB_EVENT_NOTIFIER_LIMIT_BRANCHES'] or true
 
 if enableColors?
   IrcColors = require "irc-colors"
@@ -91,11 +92,15 @@ module.exports =
     callback "New comment on \"#{data.issue.title}\" (#{formatLink(data.comment.html_url)}) by #{formatUser(data.comment.user.login)}: \"#{formatProse(data.comment.body)}\""
 
   push: (data, callback) ->
-    if (data.ref == 'refs/heads/master' || data.ref == 'refs/heads/gh-pages')
-      commit_count = data.commits.length
-      callback "#{formatUser(data.sender.login)} pushed #{commit_count} commits to #{data.repository.name}"
+    if limitBranches?
+      if (data.ref == 'refs/heads/master' || data.ref == 'refs/heads/gh-pages')
+        commit_count = data.commits.length
+        callback "#{formatUser(data.sender.login)} pushed #{commit_count} commits to #{data.repository.name}"
+      else
+        logger.info("Notifications only on master and gh-pages branches")
     else
-      logger.info("Notifications only on master and gh-pages branches")
+        commit_count = data.commits.length
+        callback "#{formatUser(data.sender.login)} pushed #{commit_count} commits to #{data.repository.name}"
 
   pull_request_review_comment: (data, callback) ->
     callback "#{formatUser(data.comment.user.login)} commented on pull request \"#{data.pull_request.title}\" (#{formatLink(data.pull_request.html_url)})"
